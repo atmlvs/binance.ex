@@ -186,6 +186,18 @@ defmodule Binance do
     end
   end
 
+  def get_klines(symbol, interval, limit, start_time) when is_binary(symbol) do
+    case HTTPClient.get_binance(
+           "/api/v3/klines?symbol=#{symbol}&interval=#{interval}&limit=#{limit}&startTime=#{start_time}"
+         ) do
+      {:ok, data} ->
+        {:ok, Enum.map(data, &Binance.Kline.new(&1))}
+
+      err ->
+        err
+    end
+  end
+
   @doc """
   Retrieves the bids & asks of the order book up to the depth for the given symbol
 
